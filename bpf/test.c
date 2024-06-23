@@ -14,8 +14,11 @@ int l2_direct_access(struct __sk_buff *skb)
 	eth = (struct ethhdr *)data;
 	if (eth + 1 > (struct ethhdr *)data_end)
 		return 0;
-	__u16 l3proto = eth->h_proto;
-	if (l3proto == 0x86dd)
+	__u8 mac_dst[6];
+	__builtin_memcpy(mac_dst, eth->h_dest, 6);
+	__u8 mac_src[6];
+	__builtin_memcpy(mac_src, eth->h_source, 6);
+	if (eth->h_proto == 0x0800)
 		return 1;
 	return 0;
 }
@@ -26,8 +29,11 @@ int l2_helper(struct __sk_buff *skb)
 	struct ethhdr eth = {};
 	if (bpf_skb_load_bytes(skb, 0, &eth, sizeof(eth)))
 		return 0;
-	__u16 l3proto = eth.h_proto;
-	if (l3proto == 0x86dd)
+	__u8 mac_dst[6];
+	__builtin_memcpy(mac_dst, eth.h_dest, 6);
+	__u8 mac_src[6];
+	__builtin_memcpy(mac_src, eth.h_source, 6);
+	if (eth.h_proto == 0x0800)
 		return 1;
 	return 0;
 }

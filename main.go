@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"time"
 
@@ -11,7 +12,11 @@ import (
 
 func main() {
 	progs := bpf.LoadProgram()
+	// curl 1.1.1.1
+	tcpseg := "7898e85e227d58ef687e15eb08004500003c488240004006e6310a00000701010101d03c0050b98fd0d000000000a002faf00c370000020405b40402080afa389db60000000001030307"
 	data := make([]byte, 256)
+	data, _ = hex.DecodeString(tcpseg)
+
 	ctx := make([]byte, 256)
 	for _, prog := range progs {
 		start := time.Now()
